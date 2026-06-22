@@ -1,0 +1,2 @@
+-- Seed data is intentionally empty for Phase 1.
+-- Create users through Supabase Auth, then create child profiles through the app.

@@ -1,0 +1,8 @@
+-- Manual RLS smoke checklist for a Supabase development project.
+-- 1. Apply migrations.
+-- 2. Create two test auth users.
+-- 3. As user A, insert a child row with parent_id = auth.uid().
+-- 4. As user B, verify selecting user A's child returns zero rows.
+-- 5. As user B, verify inserting a story against user A's child is rejected.
+-- 6. As user A, verify selecting the same child and story succeeds.
+-- 7. Repeat the owned/non-owned checks for narrations and tts_usage_monthly.
