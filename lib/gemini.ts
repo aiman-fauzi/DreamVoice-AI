@@ -1,11 +1,15 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+﻿import { GoogleGenerativeAI } from "@google/generative-ai";
 
-import { requireServerEnv } from "@/lib/env";
+import { getOptionalServerEnv, requireServerEnv } from "@/lib/env";
 
 type GeneratedStory = {
   title: string;
   storyText: string;
 };
+
+export function getGeminiModelName() {
+  return getOptionalServerEnv("GEMINI_MODEL", "gemini-3.5-flash");
+}
 
 export function parseGeneratedStory(rawText: string): GeneratedStory {
   const storyText = rawText.trim();
@@ -21,7 +25,7 @@ export function parseGeneratedStory(rawText: string): GeneratedStory {
 export async function generateStoryText(prompt: string): Promise<GeneratedStory> {
   const apiKey = requireServerEnv("GEMINI_API_KEY");
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: getGeminiModelName() });
   const result = await model.generateContent(prompt);
   const text = result.response.text();
 

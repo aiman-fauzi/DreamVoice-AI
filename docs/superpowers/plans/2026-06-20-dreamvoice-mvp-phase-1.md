@@ -59,7 +59,7 @@
 
 **Files:** `app/(auth)/login/page.tsx`, `app/(auth)/signup/page.tsx`, `app/(app)/layout.tsx`, `app/(app)/dashboard/page.tsx`, `app/(app)/children/page.tsx`, `app/(app)/children/actions.ts`, `components/auth/auth-form.tsx`, `components/children/child-form.tsx`, `components/children/children-list.tsx`, `lib/limits.ts`, `tests/limits.test.ts`.
 
-- [ ] Write failing tests for `MAX_CHILDREN_PER_PARENT = 3`, story/month limit, TTS/month limit, manual recording byte limit, and story word-count range.
+- [ ] Write failing tests for `MAX_CHILDREN_PER_PARENT = 3`, story/month limit, TTS/month limit, manual recording byte limit, and short story word-count range.
 - [ ] Implement `lib/limits.ts` constants.
 - [ ] Build email/password signup and login with Supabase.
 - [ ] Redirect authenticated users to `/dashboard`; redirect anonymous app users to `/login`.
@@ -72,7 +72,7 @@
 
 **Files:** `lib/story-themes.ts`, `lib/prompt-builder.ts`, `components/stories/theme-picker.tsx`, `tests/prompt-builder.test.ts`.
 
-- [ ] Write failing tests for all six themes, English/Bahasa Malaysia instructions, child name, age, interests, language, tone, and 600-900 word target.
+- [ ] Write failing tests for all six themes, English/Bahasa Malaysia instructions, child name, age, interests, language, tone, and 120-180 word test target.
 - [ ] Implement documented theme keys and labels.
 - [ ] Implement `buildStoryPrompt(input)` using only MVP-safe child details and explicit text-only story instructions.
 - [ ] Build theme button component.
@@ -143,3 +143,4 @@
 - Saved stories and narrations are available in the library.
 - RLS prevents one parent from accessing another parent's records.
 - Unit tests, typecheck, build, and browser smoke checks have been run before claiming completion.
+

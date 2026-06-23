@@ -1,3 +1,6 @@
+﻿import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { getGoogleTtsVoice, getOptionalServerEnv, requireServerEnv } from "@/lib/env";
@@ -37,5 +40,14 @@ describe("environment helpers", () => {
     vi.stubEnv("GOOGLE_TTS_DEFAULT_VOICE_MS", "ms-MY-Wavenet-A");
 
     expect(getGoogleTtsVoice("Bahasa Malaysia")).toBe("ms-MY-Wavenet-A");
+  });
+
+  it("uses static public Supabase env references for the browser bundle", () => {
+    const source = readFileSync(resolve(process.cwd(), "lib/env.ts"), "utf8");
+
+    expect(source).toContain("process.env.NEXT_PUBLIC_SUPABASE_URL");
+    expect(source).toContain("process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY");
+    expect(source).not.toContain('requireServerEnv("NEXT_PUBLIC_SUPABASE_URL")');
+    expect(source).not.toContain('requireServerEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")');
   });
 });

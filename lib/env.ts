@@ -1,13 +1,15 @@
-export type SupportedLanguage = "English" | "Bahasa Malaysia";
+﻿export type SupportedLanguage = "English" | "Bahasa Malaysia";
 
-export function requireServerEnv(name: string): string {
-  const value = process.env[name];
-
+function requireEnvValue(name: string, value: string | undefined): string {
   if (!value || value.trim().length === 0) {
     throw new Error(`Missing required environment variable: ${name}`);
   }
 
   return value;
+}
+
+export function requireServerEnv(name: string): string {
+  return requireEnvValue(name, process.env[name]);
 }
 
 export function getOptionalServerEnv(name: string, fallback: string): string {
@@ -26,7 +28,7 @@ export function getGoogleTtsVoice(language: SupportedLanguage): string {
 
 export function getPublicSupabaseEnv() {
   return {
-    url: requireServerEnv("NEXT_PUBLIC_SUPABASE_URL"),
-    anonKey: requireServerEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+    url: requireEnvValue("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL),
+    anonKey: requireEnvValue("NEXT_PUBLIC_SUPABASE_ANON_KEY", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
   };
 }

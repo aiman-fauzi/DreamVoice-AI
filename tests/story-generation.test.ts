@@ -1,9 +1,13 @@
-import { describe, expect, it } from "vitest";
+﻿import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { parseGeneratedStory } from "@/lib/gemini";
+import { getGeminiModelName, parseGeneratedStory } from "@/lib/gemini";
 import { isStoryThemeKey } from "@/lib/story-themes";
 
 describe("story generation helpers", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it("parses a title from the first generated line", () => {
     const result = parseGeneratedStory("The Moon Garden\nOnce upon a soft blue evening...");
 
@@ -22,6 +26,16 @@ describe("story generation helpers", () => {
 
   it("rejects unknown story themes", () => {
     expect(isStoryThemeKey("calm_bedtime")).toBe(true);
-    expect(isStoryThemeKey("voice_cloning" )).toBe(false);
+    expect(isStoryThemeKey("voice_cloning")).toBe(false);
+  });
+
+  it("uses a current Gemini model by default", () => {
+    expect(getGeminiModelName()).toBe("gemini-3.5-flash");
+  });
+
+  it("allows the Gemini model to be configured", () => {
+    vi.stubEnv("GEMINI_MODEL", "gemini-flash-latest");
+
+    expect(getGeminiModelName()).toBe("gemini-flash-latest");
   });
 });

@@ -1,6 +1,4 @@
-import textToSpeech from "@google-cloud/text-to-speech";
-
-import { requireServerEnv } from "@/lib/env";
+﻿import textToSpeech from "@google-cloud/text-to-speech";
 
 type SynthesizeSpeechInput = {
   text: string;
@@ -11,10 +9,20 @@ function getLanguageCode(voiceName: string) {
   return voiceName.split("-").slice(0, 2).join("-");
 }
 
-export async function synthesizeGoogleSpeech({ text, voiceName }: SynthesizeSpeechInput) {
-  const credentialsJson = requireServerEnv("GOOGLE_APPLICATION_CREDENTIALS_JSON");
+function createTextToSpeechClient() {
+  const credentialsJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+
+  if (!credentialsJson || credentialsJson.trim().length === 0) {
+    return new textToSpeech.TextToSpeechClient();
+  }
+
   const credentials = JSON.parse(credentialsJson) as Record<string, unknown>;
-  const client = new textToSpeech.TextToSpeechClient({ credentials });
+
+  return new textToSpeech.TextToSpeechClient({ credentials });
+}
+
+export async function synthesizeGoogleSpeech({ text, voiceName }: SynthesizeSpeechInput) {
+  const client = createTextToSpeechClient();
   const [response] = await client.synthesizeSpeech({
     input: { text },
     voice: {

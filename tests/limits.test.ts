@@ -1,11 +1,12 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import {
+  DEFAULT_STORY_WORD_COUNT_RANGE,
   MAX_CHILDREN_PER_PARENT,
   MAX_GOOGLE_TTS_NARRATIONS_PER_MONTH,
   MAX_MANUAL_RECORDING_BYTES,
   MAX_STORIES_PER_PARENT_PER_MONTH,
-  STORY_WORD_COUNT_RANGE,
+  STORY_TTS_CHARACTER_TARGET,
 } from "@/lib/limits";
 
 describe("prototype limits", () => {
@@ -25,7 +26,8 @@ describe("prototype limits", () => {
     expect(MAX_MANUAL_RECORDING_BYTES).toBe(25 * 1024 * 1024);
   });
 
-  it("keeps story length within the MVP range", () => {
-    expect(STORY_WORD_COUNT_RANGE).toEqual({ min: 600, max: 900 });
+  it("keeps story length short for TTS testing", () => {
+    expect(DEFAULT_STORY_WORD_COUNT_RANGE).toEqual({ min: 120, max: 180 });
+    expect(STORY_TTS_CHARACTER_TARGET).toBe(2500);
   });
 });

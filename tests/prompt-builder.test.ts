@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+﻿import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { getStoryWordCountRange } from "@/lib/limits";
 import { buildStoryPrompt } from "@/lib/prompt-builder";
 import { STORY_THEMES, type StoryThemeKey } from "@/lib/story-themes";
 
@@ -25,6 +26,10 @@ describe("story themes", () => {
 });
 
 describe("buildStoryPrompt", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it("includes safe child details and story constraints", () => {
     const prompt = buildStoryPrompt({ child: baseChild, themeKey: "calm_bedtime" });
 
@@ -32,8 +37,24 @@ describe("buildStoryPrompt", () => {
     expect(prompt).toContain("6 years old");
     expect(prompt).toContain("stars, cats");
     expect(prompt).toContain("calm");
-    expect(prompt).toContain("600 to 900 words");
+    expect(prompt).toContain("120 to 180 words");
+    expect(prompt).toContain("under 2500 characters");
     expect(prompt).toContain("Return story text only");
+  });
+
+  it("uses a short default story length for Google TTS testing", () => {
+    expect(getStoryWordCountRange()).toEqual({ min: 120, max: 180 });
+  });
+
+  it("allows story length to be configured by environment", () => {
+    vi.stubEnv("STORY_WORD_COUNT_MIN", "90");
+    vi.stubEnv("STORY_WORD_COUNT_MAX", "130");
+
+    expect(getStoryWordCountRange()).toEqual({ min: 90, max: 130 });
+
+    const prompt = buildStoryPrompt({ child: baseChild, themeKey: "calm_bedtime" });
+
+    expect(prompt).toContain("90 to 130 words");
   });
 
   it("instructs English output", () => {
@@ -59,3 +80,4 @@ describe("buildStoryPrompt", () => {
     }
   });
 });
+

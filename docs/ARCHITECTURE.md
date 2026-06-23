@@ -1,4 +1,4 @@
-# Architecture
+﻿# Architecture
 
 ## System Summary
 
@@ -59,6 +59,12 @@ Responsibilities:
 - Generate bedtime story text from a structured prompt.
 - Return story content only, not audio.
 
+Model selection:
+
+- Story generation uses `GEMINI_MODEL`, defaulting to `gemini-3.5-flash`.
+- Story prompts use `STORY_WORD_COUNT_MIN` and `STORY_WORD_COUNT_MAX`, defaulting to 120 to 180 words for TTS-friendly testing.
+- Keep the model configurable because Gemini model names and availability can change over time.
+
 Free-tier note: free Gemini API usage may be used by Google to improve products. Do not send sensitive personal data beyond what the MVP needs.
 
 ### Google Cloud Text-to-Speech
@@ -67,6 +73,12 @@ Responsibilities:
 
 - Convert generated story text into audio.
 - Use Standard or WaveNet voices only for Phase 1.
+
+Authentication:
+
+- Local development can use Google Application Default Credentials.
+- If `GOOGLE_APPLICATION_CREDENTIALS_JSON` is set, the server uses that JSON credential instead.
+- Hosted deployments must provide a production-safe Google Cloud credential path because a local ADC login is not available on Vercel.
 
 Free-tier note: Google Cloud TTS requires billing to be enabled, even when using monthly free character allowances. The app must enforce a monthly character cap.
 
@@ -106,8 +118,11 @@ Expected Vercel/local variables:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `GEMINI_API_KEY`
+- `GEMINI_MODEL`
+- `STORY_WORD_COUNT_MIN`
+- `STORY_WORD_COUNT_MAX`
 - `GOOGLE_CLOUD_PROJECT_ID`
-- `GOOGLE_APPLICATION_CREDENTIALS_JSON`
+- `GOOGLE_APPLICATION_CREDENTIALS_JSON` optional locally when ADC is configured
 - `APP_TTS_MONTHLY_CHARACTER_LIMIT`
 
 ## Security Principles
@@ -117,4 +132,5 @@ Expected Vercel/local variables:
 - Keep audio files private.
 - Use signed URLs for playback when needed.
 - Use RLS for all user-owned records.
+
 

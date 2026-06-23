@@ -1,4 +1,4 @@
-# Free-Tier Limits
+﻿# Free-Tier Limits
 
 ## Purpose
 
@@ -106,8 +106,9 @@ Suggested initial limits:
 - Max 3 children per parent.
 - Max 20 generated stories per parent per month.
 - Max 5 Google TTS narrations per parent per month.
-- Max story length around 600 to 900 words.
+- Default testing story length around 120 to 180 words, with the complete response targeted under 2500 characters so Google TTS stays below the 5000-byte single-request limit.
 - Max manual recording size around 25 MB.
 
 These limits can be adjusted after testing.
+
 

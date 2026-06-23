@@ -1,4 +1,4 @@
-# DreamVoice AI
+﻿# DreamVoice AI
 
 DreamVoice AI is a Phase 1 MVP for generating personalized bedtime stories for parents and children.
 
@@ -49,6 +49,15 @@ Copy-Item .env.example .env.local
 ```
 
 3. Fill in Supabase, Gemini, and Google Cloud TTS values in `.env.local`.
+
+For local Google Cloud TTS with Application Default Credentials, sign in once and set the project:
+
+```powershell
+gcloud auth application-default login
+gcloud config set project YOUR_GOOGLE_PROJECT_ID
+```
+
+Then set `GOOGLE_CLOUD_PROJECT_ID` in `.env.local` and leave `GOOGLE_APPLICATION_CREDENTIALS_JSON` blank. For hosted deployments such as Vercel, configure a production-safe Google Cloud credential path because your local ADC login is not available there.
 
 4. Start the app:
 
