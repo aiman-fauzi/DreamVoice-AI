@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 
@@ -23,10 +23,19 @@ export function AuthForm({ mode }: AuthFormProps) {
     setIsSubmitting(true);
 
     const supabase = createSupabaseBrowserClient();
+    const signupRedirectUrl = new URL("/auth/callback", window.location.origin);
+    signupRedirectUrl.searchParams.set("next", "/dashboard");
+
     const result =
       mode === "login"
         ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({ email, password });
+        : await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: signupRedirectUrl.toString(),
+            },
+          });
 
     setIsSubmitting(false);
 

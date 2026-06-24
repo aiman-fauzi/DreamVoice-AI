@@ -1,4 +1,4 @@
-﻿# Progress
+# Progress
 
 ## Current Status
 
@@ -12,22 +12,28 @@ Provider state:
 - Google TTS supports local Application Default Credentials when `GOOGLE_APPLICATION_CREDENTIALS_JSON` is not set.
 - Story generation defaults to short 120 to 180 word test stories with a 2500-character target for Google TTS single-request safety.
 - Login uses full document navigation after auth so server-rendered protected pages receive Supabase session cookies reliably.
+- Production signup now sends Supabase email confirmations to `/auth/callback`, which exchanges the confirmation code for a session before redirecting to `/dashboard`.
 
 ## Latest Conversation
 
-Date: 2026-06-23
+Date: 2026-06-24
 
 Summary:
+
+- User deployed the GitHub repository to Vercel and reported no server response after registering.
+- Investigated the signup flow and found the app did not provide a production email confirmation redirect and had no Supabase auth callback route.
+- Added signup `emailRedirectTo` pointing at `/auth/callback?next=/dashboard` on the current site origin.
+- Added `/auth/callback` route to exchange Supabase confirmation codes for a server-readable session cookie and redirect into the app.
+- Added regression tests for signup redirect wiring and auth callback code exchange.
+- Verified tests, linting, type checking, and production build after the auth fix.
+
+Earlier provider setup summary:
 
 - Fixed login post-auth navigation by switching from client router navigation to full document navigation, so protected server-rendered pages receive Supabase session cookies reliably.
 - Ran live Supabase diagnostics: auth admin access, expected tables, and private `story-audio` bucket all responded successfully.
 - Ran live Google TTS smoke: synthesized a short MP3 with `en-US-Wavenet-F` using local ADC.
 - Ran RLS smoke with two temporary users and cleanup: user B could not read user A's children, stories, narrations, or TTS usage, and cross-owner story insert was rejected.
 - Ran full live app smoke with temporary user and cleanup: login, child creation, Gemini story generation, story length under TTS limit, Google narration generation, narration metadata save, storage upload, storage cleanup, and user cleanup all passed.
-- Re-verified tests, linting, type checking, and production build after the auth fix.
-
-Earlier provider setup summary:
-
 - Added Google Cloud TTS ADC fallback when `GOOGLE_APPLICATION_CREDENTIALS_JSON` is absent or blank.
 - Preserved support for explicit JSON credentials when `GOOGLE_APPLICATION_CREDENTIALS_JSON` is configured.
 - Fixed browser-side Supabase env loading by replacing dynamic `NEXT_PUBLIC_...` lookup with static Next.js-compatible references.
@@ -42,6 +48,7 @@ Earlier provider setup summary:
 - Next.js app foundation created.
 - Supabase schema and RLS migration drafted and live-verified.
 - Auth and child profile UI created.
+- Production Supabase email-confirmation callback route created.
 - Prompt builder and six theme presets created.
 - Story generation route and UI created.
 - Google TTS quota helper, route, and UI created.
@@ -54,43 +61,51 @@ Earlier provider setup summary:
 
 ## In Progress
 
-- Vercel deployment setup and production environment configuration.
+- Vercel deployment environment verification.
+- Supabase production Auth URL configuration verification.
 - Production Google Cloud authentication strategy for Vercel.
 - Git commit/branch finishing once workspace Git metadata is usable.
 
 ## Verification
 
-Latest local verification completed on 2026-06-23:
+Latest local verification completed on 2026-06-24:
 
-- `npm test` - 8 files passed, 36 tests passed.
+- `npm test` - 10 files passed, 38 tests passed.
 - `npm run lint` - passed with zero warnings.
 - `npm run typecheck` - passed.
-- `npm run build` - passed.
+- `npm run build` - passed and includes `/auth/callback` as a dynamic route.
+
+Earlier live-provider verification completed on 2026-06-23:
+
 - Supabase live diagnostics - auth admin, expected tables, and private `story-audio` bucket passed.
 - Google TTS live smoke - short MP3 synthesis passed using `en-US-Wavenet-F`.
 - Supabase RLS smoke - owned/non-owned isolation passed with two temporary users and cleanup.
 - Full live app smoke - login, child creation, Gemini story, Google TTS narration, storage upload, and cleanup passed.
 - Gemini ListModels live check - configured model `gemini-3.5-flash` is available for `generateContent`.
 - Google Cloud services check - `texttospeech.googleapis.com` is enabled for `dreamvoice-ai`.
-- `npm run e2e` - last passed earlier after installing Playwright Chromium and running with browser-launch permissions; not rerun because the stronger live smoke passed today.
+- `npm run e2e` - last passed earlier after installing Playwright Chromium and running with browser-launch permissions; not rerun because the stronger live smoke passed that day.
 
 ## Blocked
 
-- Normal repository commits are blocked because `.git` is sandbox-protected in this workspace.
+- Normal repository commits are blocked because local `git` is still unavailable in this Windows shell.
 - Subagent-driven development is blocked because the workspace is out of subagent credits.
 - Vercel Google Cloud TTS deployment still needs a production credential strategy if service account JSON keys are blocked by organization policy.
+- Live Vercel diagnosis needs the production URL and Vercel/Supabase logs if the signup issue continues after redeploying this fix.
 
 ## Open Questions
 
-- Which Git `user.name` and `user.email` should be used for local commits?
+- Which production Vercel URL should be set as the Supabase Auth Site URL?
+- Which Git `user.name` and `user.email` should be used for local commits once Git is available?
 - Which production Google Cloud authentication path should be used for Vercel if service account JSON keys remain blocked by policy?
 - Should Supabase email confirmation be enabled for public testing after SMTP is configured?
 
 ## Next Action
 
+- Push the auth callback fix to GitHub and redeploy Vercel.
+- In Supabase Auth URL Configuration, set Site URL to the production Vercel/custom domain and add allowed redirect URLs for `/auth/callback` plus local development.
+- Verify Vercel production environment variables are set for Production, then redeploy.
 - Decide production Google Cloud authentication strategy for Vercel.
-- Configure Vercel environment variables and deployment once Git/GitHub is ready.
-- Finish Git commit/branch workflow after resolving workspace Git metadata restrictions.
+- Finish Git commit/branch workflow after resolving Git availability and workspace Git metadata restrictions.
 
 ## Key Decisions
 
@@ -104,6 +119,8 @@ Latest local verification completed on 2026-06-23:
 
 ## Useful Links
 
+- Supabase Auth redirect URLs: https://supabase.com/docs/guides/auth/redirect-urls
+- Supabase password-based auth: https://supabase.com/docs/guides/auth/passwords
 - Google Cloud TTS pricing: https://cloud.google.com/text-to-speech/pricing
 - Gemini API pricing: https://ai.google.dev/gemini-api/docs/pricing
 - Vercel pricing: https://vercel.com/pricing
