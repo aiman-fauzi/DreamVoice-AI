@@ -1,11 +1,13 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { StatusMessage } from "@/components/ui/status-message";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type AuthMode = "login" | "signup";
+type MessageTone = "info" | "error" | "success";
 
 type AuthFormProps = {
   mode: AuthMode;
@@ -15,16 +17,18 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const [messageTone, setMessageTone] = useState<MessageTone>("info");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage(null);
+    setMessageTone("info");
     setIsSubmitting(true);
 
     const supabase = createSupabaseBrowserClient();
     const signupRedirectUrl = new URL("/auth/callback", window.location.origin);
-    signupRedirectUrl.searchParams.set("next", "/dashboard");
+    signupRedirectUrl.searchParams.set("next", "/onboarding");
 
     const result =
       mode === "login"
@@ -40,16 +44,18 @@ export function AuthForm({ mode }: AuthFormProps) {
     setIsSubmitting(false);
 
     if (result.error) {
+      setMessageTone("error");
       setMessage(result.error.message);
       return;
     }
 
     if (mode === "signup" && !result.data.session) {
+      setMessageTone("success");
       setMessage("Check your email to confirm your account, then log in.");
       return;
     }
 
-    window.location.assign("/dashboard");
+    window.location.assign(mode === "signup" ? "/onboarding" : "/dashboard");
   }
 
   return (
@@ -77,7 +83,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           required
         />
       </label>
-      {message ? <p className="rounded-md bg-coral/10 p-3 text-sm text-coral">{message}</p> : null}
+      {message ? <StatusMessage tone={messageTone}>{message}</StatusMessage> : null}
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Working..." : mode === "login" ? "Log in" : "Create account"}
       </Button>

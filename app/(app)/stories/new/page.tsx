@@ -1,4 +1,6 @@
-import { StoryGenerator } from "@/components/stories/story-generator";
+﻿import { StoryGenerator } from "@/components/stories/story-generator";
+import { PageHeader } from "@/components/ui/page-header";
+import { SectionCard } from "@/components/ui/section-card";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -12,13 +14,15 @@ export default async function NewStoryPage() {
 
   return (
     <div className="grid gap-6">
-      <header>
-        <h1 className="text-3xl font-semibold">New story</h1>
-        <p className="mt-2 text-slate-600">Choose a child profile and one of six bedtime themes.</p>
-      </header>
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-soft">
+      <PageHeader
+        eyebrow="Create"
+        title="Generate a bedtime story"
+        description="Choose a child, pick one of six themes, and DreamVoice saves the result to Story History."
+        secondaryAction={{ href: "/library", label: "Story History" }}
+      />
+      <SectionCard>
         <StoryGenerator childrenProfiles={children ?? []} />
-      </section>
+      </SectionCard>
     </div>
   );
 }

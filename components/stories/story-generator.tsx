@@ -1,10 +1,13 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { BookOpen, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Field, fieldControlClass } from "@/components/ui/field";
+import { StatusMessage } from "@/components/ui/status-message";
 import { ThemePicker } from "@/components/stories/theme-picker";
 import type { StoryThemeKey } from "@/lib/story-themes";
 
@@ -51,27 +54,58 @@ export function StoryGenerator({ childrenProfiles }: StoryGeneratorProps) {
 
   if (childrenProfiles.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center shadow-soft">
-        <h2 className="text-lg font-semibold">Create a child profile first</h2>
-        <p className="mt-2 text-sm text-slate-600">Stories are personalized from child profile details and selected themes.</p>
-        <Button asChild className="mt-5"><Link href="/children">Add child</Link></Button>
-      </div>
+      <EmptyState
+        icon={BookOpen}
+        title="Set up a child profile first"
+        description="DreamVoice needs one child profile before it can generate a personalized bedtime story."
+        primaryAction={{ href: "/onboarding", label: "Finish setup" }}
+        secondaryAction={{ href: "/children", label: "Manage children" }}
+      />
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-6">
-      <label className="grid gap-2 text-sm font-semibold text-slate-700">
-        Child profile
-        <select className="h-11 rounded-md border border-slate-300 bg-white px-3 outline-none focus:border-moss focus:ring-2 focus:ring-moss/20" name="child_id" required>
-          {childrenProfiles.map((child) => (
-            <option key={child.id} value={child.id}>{child.name} ({child.language})</option>
-          ))}
-        </select>
-      </label>
-      <ThemePicker selectedTheme="calm_bedtime" />
-      {error ? <p className="rounded-md bg-coral/10 p-3 text-sm text-coral">{error}</p> : null}
-      <Button type="submit" size="lg" disabled={isSubmitting}>{isSubmitting ? "Generating..." : "Generate story"}</Button>
+      <div className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-ink text-sm font-bold text-white">1</span>
+          <div>
+            <h2 className="font-semibold text-ink">Choose child</h2>
+            <p className="text-sm text-slate-600">The selected profile sets language, tone, and prompt details.</p>
+          </div>
+        </div>
+        <Field label="Child profile">
+          <select className={fieldControlClass} name="child_id" required>
+            {childrenProfiles.map((child) => (
+              <option key={child.id} value={child.id}>{child.name} ({child.language})</option>
+            ))}
+          </select>
+        </Field>
+      </div>
+
+      <div className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-ink text-sm font-bold text-white">2</span>
+          <div>
+            <h2 className="font-semibold text-ink">Pick theme</h2>
+            <p className="text-sm text-slate-600">Choose the story direction for tonight.</p>
+          </div>
+        </div>
+        <ThemePicker selectedTheme="calm_bedtime" />
+      </div>
+
+      {error ? <StatusMessage tone="error">{error}</StatusMessage> : null}
+
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-4">
+        <div>
+          <h2 className="font-semibold text-ink">3. Generate story</h2>
+          <p className="text-sm text-slate-600">The story saves automatically to Story History.</p>
+        </div>
+        <Button type="submit" size="lg" disabled={isSubmitting}>
+          <Sparkles className="h-4 w-4" aria-hidden="true" />
+          {isSubmitting ? "Generating..." : "Generate story"}
+        </Button>
+      </div>
     </form>
   );
 }

@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { BookOpen, Mic, Moon, Sparkles } from "lucide-react";
+﻿import Link from "next/link";
+import { History, Mic, Moon, Sparkles, UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 const steps = [
-  { icon: BookOpen, label: "Create a child profile" },
-  { icon: Sparkles, label: "Pick one story theme" },
-  { icon: Mic, label: "Add generated or parent narration" },
+  { icon: UserPlus, label: "Set up parent and child profiles", text: "One guided setup step after registration." },
+  { icon: Sparkles, label: "Generate a bedtime story", text: "Choose a child and one of six gentle themes." },
+  { icon: History, label: "Return to Story History", text: "Read again, play narration, or download the text." },
 ];
 
 export default function HomePage() {
@@ -15,38 +15,36 @@ export default function HomePage() {
       <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-6 md:px-10">
         <header className="flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
-            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-moss text-white">
+            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-ink text-white">
               <Moon className="h-5 w-5" aria-hidden="true" />
             </span>
             DreamVoice AI
           </Link>
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-2" aria-label="Public navigation">
             <Button asChild variant="ghost">
               <Link href="/login">Log in</Link>
             </Button>
             <Button asChild>
-              <Link href="/signup">Start</Link>
+              <Link href="/signup">Create first story</Link>
             </Button>
           </nav>
         </header>
 
         <div className="grid flex-1 items-center gap-10 py-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="max-w-2xl">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-coral">
-              Phase 1 MVP
-            </p>
+            <p className="mb-4 text-sm font-semibold text-moss">Personalized bedtime stories</p>
             <h1 className="text-4xl font-bold leading-tight text-ink md:text-6xl">
-              Personalized bedtime stories parents can make in minutes.
+              Make tonight&apos;s story feel like it was written just for your child.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-slate-700 md:text-lg">
-              Create a child profile, choose a gentle story theme, generate a story in English or Bahasa Malaysia, and add narration with Google TTS or your own recording.
+              Register, complete one guided setup step, generate a gentle story, then return to Story History whenever bedtime needs a familiar favorite.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
                 <Link href="/signup">Create first story</Link>
               </Button>
               <Button asChild size="lg" variant="secondary">
-                <Link href="/login">Open library</Link>
+                <Link href="/login">Open dashboard</Link>
               </Button>
             </div>
           </div>
@@ -63,14 +61,21 @@ export default function HomePage() {
               {steps.map((step) => {
                 const Icon = step.icon;
                 return (
-                  <div key={step.label} className="flex items-center gap-3 rounded-md border border-slate-200 p-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-md bg-coral/10 text-coral">
+                  <div key={step.label} className="flex items-start gap-3 rounded-md border border-slate-200 p-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-moss/10 text-moss">
                       <Icon className="h-4 w-4" aria-hidden="true" />
                     </span>
-                    <span className="text-sm font-medium text-slate-800">{step.label}</span>
+                    <span>
+                      <span className="block text-sm font-semibold text-slate-900">{step.label}</span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-600">{step.text}</span>
+                    </span>
                   </div>
                 );
               })}
+            </div>
+            <div className="mt-5 flex items-center gap-2 rounded-md bg-moon px-3 py-2 text-sm text-slate-700">
+              <Mic className="h-4 w-4 text-moss" aria-hidden="true" />
+              Generated narration or parent recording stays private.
             </div>
           </div>
         </div>
@@ -78,3 +83,4 @@ export default function HomePage() {
     </main>
   );
 }
+

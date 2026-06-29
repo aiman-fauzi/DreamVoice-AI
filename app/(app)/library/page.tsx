@@ -1,4 +1,5 @@
-import { StoryLibrary } from "@/components/stories/story-library";
+﻿import { StoryLibrary } from "@/components/stories/story-library";
+import { PageHeader } from "@/components/ui/page-header";
 import { filterStoriesByChild, sortStoriesNewestFirst } from "@/lib/library";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -20,10 +21,12 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
 
   return (
     <div className="grid gap-6">
-      <header>
-        <h1 className="text-3xl font-semibold">Story library</h1>
-        <p className="mt-2 text-slate-600">Return later to read stories and play saved narration.</p>
-      </header>
+      <PageHeader
+        eyebrow="Story History"
+        title="Story History"
+        description="Return later to read saved stories and play private narration."
+        primaryAction={{ href: "/stories/new", label: "Generate story" }}
+      />
       <StoryLibrary stories={visibleStories} childrenProfiles={children ?? []} selectedChildId={child} />
     </div>
   );
