@@ -1,11 +1,11 @@
-﻿import { ChildForm } from "@/components/children/child-form";
+import { ChildForm } from "@/components/children/child-form";
 import { ChildrenList } from "@/components/children/children-list";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { MAX_CHILDREN_PER_PARENT } from "@/lib/limits";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { createChildAction } from "./actions";
+import { createChildAction, deleteChildAction, updateChildAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +25,10 @@ export default async function ChildrenPage() {
         <PageHeader
           eyebrow="Story setup"
           title="Children"
-          description="Profiles keep story generation fast: choose a child, pick a theme, and DreamVoice handles the prompt."
+          description="Profiles keep story generation fast: choose a child, pick a theme, and DreamVoice handles the prompt. You can now edit or delete profiles here."
           primaryAction={childProfiles.length > 0 ? { href: "/stories/new", label: "Generate story" } : { href: "/onboarding", label: "Finish setup" }}
         />
-        <ChildrenList childrenProfiles={childProfiles} />
+        <ChildrenList childrenProfiles={childProfiles} updateAction={updateChildAction} deleteAction={deleteChildAction} />
       </section>
       <aside>
         {canAddChild ? (

@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import { type MouseEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Mic, Square } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { StatusMessage } from "@/components/ui/status-message";
@@ -106,11 +107,25 @@ export function ManualRecorder({ storyId }: ManualRecorderProps) {
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-soft">
-      <h2 className="text-lg font-semibold">Parent recording</h2>
-      <p className="mt-2 text-sm leading-6 text-slate-600">Record your own narration as the free alternative to generated voice cloning.</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-moss">Parent recording</p>
+      <div className="mt-2 flex items-start gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-coral/10 text-coral">
+          <Mic className="h-5 w-5" aria-hidden="true" />
+        </span>
+        <div>
+          <h2 className="text-lg font-semibold text-ink">Record your voice</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-600">Save a manual narration with your own voice, with no paid voice feature needed.</p>
+        </div>
+      </div>
       <div className="mt-4 flex flex-wrap gap-3">
-        <Button type="button" onClick={startRecording} disabled={isRecording}>Record</Button>
-        <Button type="button" variant="secondary" onClick={stopRecording} disabled={!isRecording}>Stop</Button>
+        <Button type="button" onClick={startRecording} disabled={isRecording}>
+          <Mic className="h-4 w-4" aria-hidden="true" />
+          Record
+        </Button>
+        <Button type="button" variant="secondary" onClick={stopRecording} disabled={!isRecording}>
+          <Square className="h-4 w-4" aria-hidden="true" />
+          Stop
+        </Button>
       </div>
       {message ? <StatusMessage className="mt-3" tone={tone}>{message}</StatusMessage> : null}
     </div>

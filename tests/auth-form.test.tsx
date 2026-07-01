@@ -13,6 +13,12 @@ describe("AuthForm", () => {
     vi.clearAllMocks();
   });
 
+  it("shows password guidance for account creation", () => {
+    render(<AuthForm mode="signup" />);
+
+    expect(screen.getByText("Use at least 6 characters. You can change this later from account recovery.")).toBeInTheDocument();
+  });
+
   it("sends signup confirmation emails to onboarding after the auth callback", async () => {
     const signUp = vi.fn().mockResolvedValue({
       data: { session: null },
@@ -48,6 +54,7 @@ describe("AuthForm", () => {
       });
     });
   });
+
   it("announces login failures as errors", async () => {
     const signInWithPassword = vi.fn().mockResolvedValue({
       data: { session: null },
@@ -73,5 +80,3 @@ describe("AuthForm", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Invalid login credentials");
   });
 });
-
-

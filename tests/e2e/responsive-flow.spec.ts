@@ -1,11 +1,11 @@
-import { expect, test } from "@playwright/test";
+﻿import { expect, test } from "@playwright/test";
 
 const mobilePages = [
-  { path: "/", heading: /make tonight/i },
-  { path: "/signup", heading: "Create account" },
-  { path: "/login", heading: "Log in" },
-  { path: "/forgot-password", heading: "Reset your password" },
-  { path: "/reset-password", heading: "Choose a new password" },
+  { path: "/", heading: /personalized bedtime stories/i, anchor: /Tonight's story preview/i },
+  { path: "/signup", heading: "Create account", anchor: /Private bedtime stories/i },
+  { path: "/login", heading: "Log in", anchor: /Private bedtime stories/i },
+  { path: "/forgot-password", heading: "Reset your password", anchor: /Private bedtime stories/i },
+  { path: "/reset-password", heading: "Choose a new password", anchor: /Private bedtime stories/i },
 ];
 
 async function expectNoHorizontalOverflow(page: import("@playwright/test").Page) {
@@ -20,6 +20,7 @@ test("public and recovery pages stay usable on mobile", async ({ page }) => {
   for (const item of mobilePages) {
     await page.goto(item.path);
     await expect(page.getByRole("heading", { name: item.heading })).toBeVisible();
+    await expect(page.getByText(item.anchor)).toBeVisible();
     await expectNoHorizontalOverflow(page);
   }
 });

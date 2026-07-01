@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Field, fieldControlClass } from "@/components/ui/field";
 import { StatusMessage } from "@/components/ui/status-message";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -60,21 +61,19 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4">
-      <label className="grid gap-2 text-sm font-medium text-slate-700">
-        Email
+      <Field label="Email" helperText={mode === "signup" ? "Use the email address where you want confirmation and reset links." : undefined}>
         <input
-          className="h-11 rounded-md border border-slate-300 px-3 text-base outline-none focus:border-moss focus:ring-2 focus:ring-moss/20"
+          className={fieldControlClass}
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           autoComplete="email"
           required
         />
-      </label>
-      <label className="grid gap-2 text-sm font-medium text-slate-700">
-        Password
+      </Field>
+      <Field label="Password" helperText={mode === "signup" ? "Use at least 6 characters. You can change this later from account recovery." : undefined}>
         <input
-          className="h-11 rounded-md border border-slate-300 px-3 text-base outline-none focus:border-moss focus:ring-2 focus:ring-moss/20"
+          className={fieldControlClass}
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
@@ -82,7 +81,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           minLength={6}
           required
         />
-      </label>
+      </Field>
       {message ? <StatusMessage tone={messageTone}>{message}</StatusMessage> : null}
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Working..." : mode === "login" ? "Log in" : "Create account"}

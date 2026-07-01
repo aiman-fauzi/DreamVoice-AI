@@ -2,7 +2,7 @@
 
 ## Current Status
 
-Phase 1 MVP local implementation is complete and the authenticated product flow refresh has been implemented locally. The app includes the Next.js foundation, Supabase schema/client foundation, auth screens, password recovery screens, guided onboarding, child profile flow, prompt builder, story generation route/UI, Google TTS quota route/UI, manual recording route/UI, story history, private story download, reusable UI primitives, responsive app navigation, and automated tests.
+Phase 1 MVP local implementation is complete, the authenticated product flow refresh has been implemented locally, all three UI/UX polish phases are implemented locally, and child/story edit-delete management is implemented locally. The app includes the Next.js foundation, Supabase schema/client foundation, auth screens, password recovery screens, guided onboarding, child profile flow, prompt builder, story generation route/UI, Google TTS quota route/UI, manual recording route/UI, story history, private story download, child and story management, reusable UI primitives, responsive app navigation, and automated tests.
 
 Provider state:
 
@@ -15,6 +15,38 @@ Provider state:
 - Production signup sends Supabase email confirmations to `/auth/callback`, which exchanges the confirmation code for a session before redirecting to onboarding.
 
 ## Latest Conversation
+
+Date: 2026-07-01
+
+Summary:
+
+- User requested use of the local `ui-design` skill to improve DreamVoice AI UI/UX.
+- Chosen sequencing is a phased UI/UX polish pass from easiest to hardest: public/auth entry first, story detail/listening/history second, and story creation flow third.
+- Created the approved design spec at `docs/superpowers/specs/2026-06-30-phased-ui-ux-polish-design.md`.
+- The design direction is warm, polished, calm, and capable, with a bedtime "story stage" treatment as the signature differentiator.
+- Scope remains Phase 1 only: no public sharing, voice cloning, subscriptions, analytics, provider changes, or database/RLS changes.
+- Implemented Phase 1 public/auth entry UI polish after user approved the phased spec.
+- Added a shared auth shell for login, signup, forgot-password, and reset-password pages.
+- Refreshed the landing page with a stronger DreamVoice AI first impression, product promise, and `Tonight's story preview` panel.
+- Updated `AuthForm` to use the shared `Field` component and signup helper text while preserving Supabase auth behavior.
+- Added browser and component regression checks for the new public/auth UX anchors and signup helper text.
+- The visual brainstorming companion had trouble staying reachable via the bundled helper on Windows, so the design decision was completed through chat instead.
+- Implemented Phase 2 story detail/listening/history UI polish while keeping MVP Phase 1 product scope unchanged.
+- Added a reusable story stage treatment for private reading, with metadata chips and preserved story formatting.
+- Refreshed the story detail page into a private story toolkit, listening options, saved audio playback, and reading-stage flow.
+- Refreshed story history cards and filters so saved stories are easier to scan, filter, and reopen.
+- Refreshed generated narration, parent recording, and audio playback cards with clearer private/audio states.
+- Added regression coverage for the story library filter/card states, the story stage, and private playback presentation.
+- Re-reviewed the Phase 2 work before starting Phase 3; the only issue found was corrupt generated Next.js cache metadata, fixed by clearing `.next/dev/types`.
+- Implemented Phase 3 story creation UI polish with a guided composer, selected child summary, clearer theme selected state, disabled/loading behavior, and generation status feedback.
+- Added child profile edit and delete actions/UI on the Children page, reusing shared validation and authenticated ownership filters.
+- Added saved story edit and delete actions/UI on the story detail page, including private audio storage cleanup before story deletion.
+- Added focused regression tests for the story composer, theme picker, child profile parsing, child card management, story edit parsing, storage-path filtering, and story editor UI.
+- Re-checked all three UI/UX phases and child/story management for GitHub update 3; no remaining implementation gap was found.
+- Fresh verification passed on 2026-07-01: unit/component tests, lint, typecheck, production build, and Playwright browser smoke.
+- Git CLI remains unavailable in this Windows shell, so upload commands were provided for the user to run locally.
+
+Previous conversation:
 
 Date: 2026-06-29
 
@@ -34,7 +66,7 @@ Summary:
 - Hardened `.gitignore` so `.env*` files stay ignored while `.env.example` remains commit-safe.
 - Added `docs/TASK_COMPLETION_PROTOCOL.md` and linked it from `AGENTS.md` so every completed task gets a consistent handoff.
 
-Previous conversation:
+Earlier conversation:
 
 Date: 2026-06-28
 
@@ -77,6 +109,12 @@ Earlier provider setup summary:
 - Manual recording route and UI created.
 - Story library and debug page created.
 - Authenticated product UX refresh implemented.
+- Phased UI/UX polish design spec created.
+- Phase 1 public/auth entry UI polish implemented.
+- Phase 2 story detail/listening/history UI polish implemented.
+- Phase 3 story creation flow UI polish implemented.
+- Child profile edit/delete management implemented.
+- Saved story edit/delete management implemented.
 - One-step onboarding for parent profile and first child profile implemented.
 - Forgot password and reset password UI implemented.
 - Private story text download implemented.
@@ -93,6 +131,20 @@ Earlier provider setup summary:
 - Git commit/branch finishing once workspace Git metadata is usable.
 
 ## Verification
+
+Latest implementation verification completed on 2026-07-01:
+
+- `npm test` - 24 files passed, 64 tests passed.
+- `npm run lint` - passed with zero warnings.
+- `npm run typecheck` - passed.
+- `npm run build` - passed.
+- `npm run e2e` - 3 Chromium browser tests passed.
+- `git status --short` and `git remote -v` could not run because Git CLI is still unavailable in this Windows shell.
+
+Latest documentation verification completed on 2026-06-30:
+
+- Design spec self-review completed for placeholder, contradiction, scope, and ambiguity issues.
+- No runtime tests were run because this session changed documentation only.
 
 Latest local verification completed on 2026-06-29:
 
@@ -127,6 +179,8 @@ Earlier live-provider verification completed on 2026-06-23:
 
 ## Next Action
 
+- Run the provided Git CLI commands from a shell where Git is installed to create GitHub update 3.
+- Review the implemented Phase 3 story creation and child/story management changes locally.
 - Review the refreshed flow locally, especially onboarding, dashboard guidance, story generation, story history, and story detail actions.
 - Push the flow refresh to GitHub and redeploy Vercel after Git is available.
 - In Supabase Auth URL Configuration, set Site URL to the production Vercel/custom domain and add allowed redirect URLs for `/auth/callback` plus local development.
@@ -139,10 +193,12 @@ Earlier live-provider verification completed on 2026-06-23:
 - Use Gemini API free tier for story generation.
 - Use Google Cloud TTS for Phase 1 generated narration.
 - Enforce app-side TTS character usage limits.
-- Keep voice cloning for Phase 2.
+- Keep parent voice cloning out of MVP Phase 1; any future product phase remains KIV until explicitly approved.
 - Keep public story sharing KIV until explicitly approved.
 - Deploy via Vercel from GitHub.
 - Keep paid features out of Phase 1.
+- Improve UI/UX in three phases from easiest to hardest: public/auth entry, story detail/listening/history, then story creation flow; all three phases are now implemented locally.
+- Child and story edit/delete actions must stay authenticated, parent-owned, and scoped to existing Phase 1 data; story and child deletes should remove owned private audio files before deleting rows.
 - Never commit secrets or invent fake environment values; handle missing configuration gracefully and document required variables by name, use, reason, and value description only.
 - After every completed task, explain changes, rationale, affected files, risks, verification, and the next highest-priority task; avoid unrelated edits and keep changes/commits small.
 
@@ -155,3 +211,7 @@ Earlier live-provider verification completed on 2026-06-23:
 - Vercel pricing: https://vercel.com/pricing
 - GitHub pricing: https://github.com/pricing
 - Supabase docs: https://supabase.com/docs
+
+
+
+
